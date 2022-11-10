@@ -3,13 +3,15 @@ package com.app.raghu.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.app.raghu.EmployeeUtil;
 import com.app.raghu.entity.Employee;
 import com.app.raghu.exception.EmployeeNotFoundException;
 import com.app.raghu.repo.EmployeeRepository;
 import com.app.raghu.service.IEmployeeService;
+import com.app.raghu.util.EmployeeUtil;
 
 @Service
 public class EmployeeServiceImpl implements IEmployeeService {
@@ -65,6 +67,11 @@ public class EmployeeServiceImpl implements IEmployeeService {
 	public List<Employee> getAllEmployees() {
 		List<Employee> list = repo.findAll();
 		return list;
+	}
+	
+	public Page<Employee> getAllEmployees(Pageable pageable) {
+		Page<Employee> pages = repo.findAll(pageable);
+		return pages;
 	}
 
 }

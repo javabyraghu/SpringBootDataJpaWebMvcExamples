@@ -1,8 +1,9 @@
 package com.app.raghu.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.app.raghu.entity.Employee;
 import com.app.raghu.exception.EmployeeNotFoundException;
 import com.app.raghu.service.IEmployeeService;
+import com.app.raghu.util.EmployeeUtil;
 
 @Controller
 @RequestMapping("/employee")
@@ -29,7 +31,8 @@ public class EmployeeController {
 	 * when end-user enters /register with GET Type
 	 */
 	@GetMapping("/register")
-	public String showRegPage() {
+	public String showRegPage(Model model) {
+		EmployeeUtil.createDeptList(model);
 		return "EmployeeRegister";
 	}
 	
@@ -56,6 +59,8 @@ public class EmployeeController {
 				//"EMPLOYEE '"+id+"' CREATED";
 		
 		model.addAttribute("message", message);
+		//for dynamic dropdown
+		EmployeeUtil.createDeptList(model);
 		return "EmployeeRegister";
 	}
 	
@@ -67,7 +72,7 @@ public class EmployeeController {
 	 * In UI use th:each="tempVariable:${collectionName}" to read data 
 	 * and print as HTML Table.
 	 */
-	@GetMapping("/all")
+	/*@GetMapping("/all")
 	public String showData(
 			Model model,
 			@RequestParam(value = "message", required = false) String message
@@ -75,6 +80,23 @@ public class EmployeeController {
 	{
 		List<Employee> list = service.getAllEmployees();
 		model.addAttribute("list", list);
+		model.addAttribute("message", message);
+		return "EmployeeData";
+	}*/
+	
+	
+	//.../all?page=3&size=10
+	@GetMapping("/all")
+	public String showData(
+			Model model,
+			@PageableDefault(page = 0, size = 3) Pageable pageable,
+			@RequestParam(value = "message", required = false) String message
+			) 
+	{
+		//List<Employee> list = service.getAllEmployees();
+		Page<Employee> page = service.getAllEmployees(pageable);
+		model.addAttribute("list", page.getContent());
+		model.addAttribute("page", page);
 		model.addAttribute("message", message);
 		return "EmployeeData";
 	}
@@ -125,6 +147,8 @@ public class EmployeeController {
 		try {
 			Employee employee = service.getOneEmployee(empId);
 			model.addAttribute("employee", employee);
+			//for dynamic drop down
+			EmployeeUtil.createDeptList(model);
 			page = "EmployeeEdit";
 		} catch (EmployeeNotFoundException e) {
 			e.printStackTrace();

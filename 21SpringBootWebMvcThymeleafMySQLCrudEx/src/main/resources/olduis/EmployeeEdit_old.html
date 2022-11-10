@@ -10,9 +10,9 @@
 			NAME  : <input type="text" th:field="*{empName}"/>
 			SALARY: <input type="text" th:field="*{empSal}"/>
 			DEPT  : <select th:field="*{empDept}">
-						<option value="DEV">DEV</option>
-						<option value="QA">QA</option>
-						<option value="BA">BA</option>
+						<option value="">--SELECT--</option>
+						<option th:each="dob:${deptList}" 
+						th:value="${dob}" th:text="${dob}"></option>
 					</select>
 			<button type="submit">UPDATE</button>				
 		</pre>
