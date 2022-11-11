@@ -49,17 +49,31 @@
 		<!--card end-->
 		<nav aria-label="Page navigation example">
 			<ul class="pagination justify-content-center">
-				<li class="page-item"><a class="page-link" th:if="${!page.isFirst()}" th:href="@{/employee/all(page=0)}">First</a></li>
-				<li class="page-item"><a class="page-link" th:if="${page.hasPrevious()}" th:href="@{/employee/all(page=${page.getNumber()-1})}">Previous</a></li>
-				
+				<li class="page-item"><a class="page-link" th:if="${!page.isFirst()}"
+						th:href="@{/employee/all(page=0)}">First</a></li>
+				<li class="page-item"><a class="page-link" th:if="${page.hasPrevious()}"
+						th:href="@{/employee/all(page=${page.getNumber()-1})}">Previous</a></li>
+
 				<th:block th:each="i: ${#numbers.sequence(0, page.getTotalPages()- 1)}">
-					<li class="page-item">
-						<a class="page-link" th:href="@{/employee/all(page=${i})}">[[${i+1}]]</a>
-					</li>
+					<div th:switch="${i}">
+						<div th:case="${page.getNumber()}">
+							<li class="page-item active">
+								<a class="page-link" th:href="@{/employee/all(page=${i})}">[[${i+1}]]</a>
+							</li>
+						</div>
+
+						<div th:case="*">
+							<li class="page-item">
+								<a class="page-link" th:href="@{/employee/all(page=${i})}">[[${i+1}]]</a>
+							</li>
+						</div>
+					</div>
 				</th:block>
-				
-				<li class="page-item"><a class="page-link" th:if="${page.hasNext()}" th:href="@{/employee/all(page=${page.getNumber()+1})}">Next</a></li>
-				<li class="page-item"><a class="page-link" th:if="${!page.isLast()}" th:href="@{/employee/all(page=${page.getTotalPages()-1})}">Last</a></li>
+
+				<li class="page-item"><a class="page-link" th:if="${page.hasNext()}"
+						th:href="@{/employee/all(page=${page.getNumber()+1})}">Next</a></li>
+				<li class="page-item"><a class="page-link" th:if="${!page.isLast()}"
+						th:href="@{/employee/all(page=${page.getTotalPages()-1})}">Last</a></li>
 			</ul>
 		</nav>
 	</div>
